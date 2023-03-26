@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/notes_list.dart';
@@ -21,15 +20,6 @@ void main() async {
   // //print(await db.getAllNotes());
   // print(await getDatabasesPath());
   // print(await db.getNotes(1));
-  AwesomeNotifications().initialize("resource://drawable/res_notify_icon", [
-    NotificationChannel(
-      channelKey: "basic_channel_1",
-      channelName: "basic Notification_1",
-      channelDescription: "channelDescription",
-      importance: NotificationImportance.Low,
-      locked: true,
-    )
-  ]);
   runApp(const MyApp());
 }
 
