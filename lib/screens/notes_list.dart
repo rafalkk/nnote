@@ -181,10 +181,7 @@ class _NotesListState extends State<NotesList> {
           onPressed: () async {
             await Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => NotesEdit(
-                        mode: NotesEditMode.create,
-                      )),
+              MaterialPageRoute(builder: (context) => NotesEdit()),
             );
             setState(() {});
           },
@@ -203,8 +200,7 @@ class _NotesListState extends State<NotesList> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NotesEdit(
-                              mode: NotesEditMode.update,
+                        builder: (context) => NotesEdit.edit(
                               noteToEdit: Note.fromMap(snapshot.data![index]),
                             )),
                   );

@@ -9,10 +9,17 @@ enum NotesEditMode {
 }
 
 class NotesEdit extends StatefulWidget {
-  final NotesEditMode mode;
+  final NotesEditMode _mode;
   Note? noteToEdit;
 
-  NotesEdit({required this.mode, this.noteToEdit});
+  NotesEdit() : _mode = NotesEditMode.create;
+
+  // var _id;
+  //   var _name;
+
+  //   Student({int id, String name}) : _id = id, _name = name;
+
+  NotesEdit.edit({required this.noteToEdit}) : _mode = NotesEditMode.update;
 
   _NotesEdit createState() => _NotesEdit();
 }
@@ -64,7 +71,7 @@ class _NotesEdit extends State<NotesEdit> {
   // }
 
   Future<void> handleSaveButton() async {
-    switch (widget.mode) {
+    switch (widget._mode) {
       case NotesEditMode.create:
         Note newNote = Note(
           title: noteTitle,
@@ -85,8 +92,8 @@ class _NotesEdit extends State<NotesEdit> {
         break;
 
       case NotesEditMode.update:
-        Note? editNote = widget.noteToEdit;
-        editNote!.title = noteTitle;
+        Note editNote = widget.noteToEdit!;
+        editNote.title = noteTitle;
         editNote.content = noteContent;
 
         try {
@@ -108,7 +115,7 @@ class _NotesEdit extends State<NotesEdit> {
     super.initState();
     _titleTextController.addListener(handleTitleTextChange);
     _contentTextController.addListener(handleNoteTextChange);
-    switch (widget.mode) {
+    switch (widget._mode) {
       case NotesEditMode.create:
         break;
       case NotesEditMode.update:
