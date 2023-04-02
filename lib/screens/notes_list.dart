@@ -1,12 +1,14 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
 import '../models/notes_database.dart';
+import '../models/notification.dart';
 import '../widgets/action_button.dart';
 import '../widgets/bottom_action_bar.dart';
 import '../widgets/note_title.dart';
 import 'notes_edit.dart';
+
+var notificationHelper = NotificationHelper();
 
 enum ReadDatabaseMode {
   normal,
@@ -106,45 +108,22 @@ class _NotesListState extends State<NotesList> {
     }
   }
 
+  // Notify
+  void handleNotification(Note note) async {
+    try {
+      await notificationHelper.showOngoingNotificationWithActions(
+          note.id!, note.title, note.content);
+    } catch (e) {
+      print('$e || Error notifying note');
+    } finally {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (isAllowed == false) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Allow Notifications'),
-            content: Text('Our app would like to send you notifications'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Don\'t Allow',
-                  style: TextStyle(color: Colors.grey, fontSize: 18),
-                ),
-              ),
-              TextButton(
-                onPressed: () => AwesomeNotifications()
-                    .requestPermissionToSendNotifications()
-                    .then((_) => Navigator.pop(context)),
-                child: Text(
-                  'Allow',
-                  style: TextStyle(
-                    color: Colors.teal,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    });
+    notificationHelper.initNotification;
   }
 
   @override
@@ -217,7 +196,10 @@ class _NotesListState extends State<NotesList> {
                               ActionButton(
                                 icon: Icons.notification_add_outlined,
                                 label: "Notify",
-                                handleOnTap: () {},
+                                handleOnTap: () {
+                                  handleNotification(
+                                      Note.fromMap(snapshot.data![index]));
+                                },
                               ),
                               ActionButton(
                                 icon: Icons.archive_outlined,

@@ -1,4 +1,3 @@
-// ignore: empty_constructor_bodies
 class Note {
   int? id;
   String title;
