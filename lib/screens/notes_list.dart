@@ -47,25 +47,6 @@ Future<List<Map<String, dynamic>>> readDatabase1(
   }
 }
 
-// Future<List<Map<String, dynamic>>> readDatabase() async {
-//   try {
-//     NotesDatabase db = NotesDatabase();
-//     await db.initDatabase();
-//     List<Map> notesList = await db.getAllNotesArchived();
-//     print("ODCZYTYWANIE BAZY");
-//     print(notesList);
-//     await db.closeDatabase();
-//     List<Map<String, dynamic>> notesListSorted =
-//         List<Map<String, dynamic>>.from(notesList);
-//     notesListSorted.sort((a, b) => (a['date']).compareTo(b['date']));
-
-//     return notesListSorted;
-//   } catch (e) {
-//     print('$e || Error reading database');
-//     return [{}];
-//   }
-// }
-
 class NotesList extends StatefulWidget {
   NotesList({super.key});
 
@@ -123,7 +104,7 @@ class _NotesListState extends State<NotesList> {
   @override
   void initState() {
     super.initState();
-    notificationHelper.initNotification;
+    notificationHelper.initNotification();
   }
 
   @override
@@ -220,15 +201,6 @@ class _NotesListState extends State<NotesList> {
                           ));
                 },
               );
-              // NoteTile(
-              //   id: snapshot.data![index]["id"],
-              //   noteTitle: snapshot.data![index]["title"],
-              //   noteContent: snapshot.data![index]["content"],
-              //   archieved: true,
-              //   handleDelete: () {
-              //     handleDelete(snapshot.data![index]["id"]);
-              //   },
-              //);
             },
           );
         },

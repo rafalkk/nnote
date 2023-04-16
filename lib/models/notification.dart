@@ -29,23 +29,23 @@ class NotificationHelper {
 
   @pragma('vm:entry-point')
   static notificationTap(NotificationResponse notificationResponse) async {
-    print("DEBUG :::notificationResponse:::");
-    print(notificationResponse.notificationResponseType);
-
-    switch (notificationResponse.notificationResponseType) {
-      case NotificationResponseType.selectedNotification:
-        {
-          // do something;
-        }
-        break;
-
-      case NotificationResponseType.selectedNotificationAction:
-        {
-          if (notificationResponse.actionId == "navigationActionId") {
-            // do something; ;
-          }
-        }
-        break;
+    if (notificationResponse.notificationResponseType ==
+        NotificationResponseType.selectedNotificationAction) {
+      print(notificationResponse.actionId);
+      switch (notificationResponse.actionId) {
+        case "id_1":
+          // Handle action 1
+          break;
+        case "id_2":
+          // Handle action 2
+          break;
+        case "id_3":
+          // Handle action 3
+          break;
+        default:
+          // Handle unknown action
+          break;
+      }
     }
   }
 
