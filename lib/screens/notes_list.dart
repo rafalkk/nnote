@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
@@ -55,11 +57,6 @@ class NotesList extends StatefulWidget {
 }
 
 class _NotesListState extends State<NotesList> {
-  // Render the screen and update changes
-  // TODO: void afterNavigatorPop() {
-  //   setState(() {});
-  // }
-
   // Delete Note
   void handleDelete(int id) async {
     try {
@@ -105,12 +102,39 @@ class _NotesListState extends State<NotesList> {
   void initState() {
     super.initState();
     notificationHelper.initNotification();
+    listenNotifications();
+
+    // notificationHelper.selectNotificationStream.stream.listen((event) {
+    //   print("to jest stream: $event");
+    // });
+    // notificationHelper.selectNotificationStream.add("test");
+  }
+
+  void listenNotifications() {
+    NotificationHelper.onNotifications.stream.listen(onClickedNotification);
+  }
+
+  void onClickedNotification(String? payload) {
+    print("TEST RXDART");
+    print(payload);
+  }
+
+  @override
+  void dispose() {
+    NotificationHelper.onNotifications.close();
+    // notificationHelper.didReceiveLocalNotificationStream.close();
+    //notificationHelper.selectNotificationStream.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(appBarText), actions: [
+        IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () => setState(() {}),
+        ),
         PopupMenuButton(
             itemBuilder: (context) => [
                   PopupMenuItem(

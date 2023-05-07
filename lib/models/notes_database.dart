@@ -62,6 +62,14 @@ class NotesDatabase {
     return await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 
+//RAW QUERRY
+  Future<int> archiveNoteRAW(int id) async {
+    return await database.rawUpdate(
+      'UPDATE notes SET archived = ? WHERE id = ?',
+      [1, id],
+    );
+  }
+
   closeDatabase() async {
     await database.close();
   }
