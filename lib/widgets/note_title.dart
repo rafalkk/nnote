@@ -23,7 +23,8 @@ class NoteTile extends StatelessWidget {
       title: Text(
         noteObject.title,
       ),
-      subtitle: Text(noteObject.archived.toString()),
+      subtitle: Text(
+          "created: ${noteObject.date.year.toString()}-${noteObject.date.month.toString()}-${noteObject.date.day.toString()}"),
       onLongPress: handleOnLongPress,
       onTap: onTap,
     );
