@@ -18,10 +18,11 @@ enum ReadDatabaseMode {
 }
 
 ReadDatabaseMode vievMode = ReadDatabaseMode.normal;
+
 String appBarText = "Notes List";
 bool fabVisibilityFlag = true;
 
-Future<List<Map<String, dynamic>>> readDatabase1(
+Future<List<Map<String, dynamic>>> readDatabase(
     {required ReadDatabaseMode mode}) async {
   try {
     NotesDatabase db = NotesDatabase();
@@ -86,10 +87,26 @@ class _NotesListState extends State<NotesList> {
     }
   }
 
+  // Unarchive
+  void handleUnarchive(Note note) async {
+    try {
+      NotesDatabase db = NotesDatabase();
+      await db.initDatabase();
+      note.archived = false;
+      await db.updateNote(note);
+      await db.closeDatabase();
+    } catch (e) {
+      print('$e || Error unarchiveing note');
+    } finally {
+      setState(() {});
+    }
+  }
+
   // Notify
   void handleNotification(Note note) async {
     try {
-      await notificationHelper.showOngoingNotificationWithActions(
+      await notificationHelper.requestPermissions();
+      await notificationHelper.showBigTextNotification(
           note.id!, note.title, note.content);
     } catch (e) {
       print('$e || Error notifying note');
@@ -102,28 +119,10 @@ class _NotesListState extends State<NotesList> {
   void initState() {
     super.initState();
     notificationHelper.initNotification();
-    listenNotifications();
-
-    // notificationHelper.selectNotificationStream.stream.listen((event) {
-    //   print("to jest stream: $event");
-    // });
-    // notificationHelper.selectNotificationStream.add("test");
-  }
-
-  void listenNotifications() {
-    NotificationHelper.onNotifications.stream.listen(onClickedNotification);
-  }
-
-  void onClickedNotification(String? payload) {
-    print("TEST RXDART");
-    print(payload);
   }
 
   @override
   void dispose() {
-    NotificationHelper.onNotifications.close();
-    // notificationHelper.didReceiveLocalNotificationStream.close();
-    //notificationHelper.selectNotificationStream.close();
     super.dispose();
   }
 
@@ -173,7 +172,7 @@ class _NotesListState extends State<NotesList> {
         ),
       ),
       body: FutureBuilder(
-        future: readDatabase1(mode: vievMode),
+        future: readDatabase(mode: vievMode),
         builder: (context, snapshot) {
           return ListView.builder(
             itemCount: snapshot.data!.length,
@@ -191,37 +190,65 @@ class _NotesListState extends State<NotesList> {
                   setState(() {});
                 },
                 handleOnLongPress: () {
+                  List<ActionButton> actionButtonsList = [];
+                  if (vievMode == ReadDatabaseMode.normal) {
+                    actionButtonsList = [
+                      ActionButton(
+                        icon: Icons.notification_add_outlined,
+                        label: "Notify",
+                        handleOnTap: () {
+                          handleNotification(
+                              Note.fromMap(snapshot.data![index]));
+                        },
+                      ),
+                      ActionButton(
+                        icon: Icons.archive_outlined,
+                        label: "Archive",
+                        handleOnTap: () {
+                          handleArchive(Note.fromMap(snapshot.data![index]));
+                        },
+                      ),
+                      ActionButton(
+                        icon: Icons.delete_outline,
+                        label: "Delete",
+                        handleOnTap: () {
+                          handleDelete(snapshot.data![index]["id"]);
+                        },
+                      )
+                    ];
+                  } else if (vievMode == ReadDatabaseMode.archievied) {
+                    actionButtonsList = [
+                      ActionButton(
+                        icon: Icons.notification_add_outlined,
+                        label: "Notify",
+                        handleOnTap: () {
+                          handleNotification(
+                              Note.fromMap(snapshot.data![index]));
+                        },
+                      ),
+                      ActionButton(
+                        icon: Icons.unarchive_outlined,
+                        label: "Unarchive",
+                        handleOnTap: () {
+                          handleUnarchive(Note.fromMap(snapshot.data![index]));
+                        },
+                      ),
+                      ActionButton(
+                        icon: Icons.delete_outline,
+                        label: "Delete",
+                        handleOnTap: () {
+                          handleDelete(snapshot.data![index]["id"]);
+                        },
+                      )
+                    ];
+                  }
                   showModalBottomSheet(
                       barrierColor: Colors.transparent,
                       isDismissible: true,
                       enableDrag: true,
                       context: context,
                       builder: (context) => BottomActionBar(
-                            actionButtonsList: [
-                              ActionButton(
-                                icon: Icons.notification_add_outlined,
-                                label: "Notify",
-                                handleOnTap: () {
-                                  handleNotification(
-                                      Note.fromMap(snapshot.data![index]));
-                                },
-                              ),
-                              ActionButton(
-                                icon: Icons.archive_outlined,
-                                label: "Archive",
-                                handleOnTap: () {
-                                  handleArchive(
-                                      Note.fromMap(snapshot.data![index]));
-                                },
-                              ),
-                              ActionButton(
-                                icon: Icons.delete_outline,
-                                label: "Delete",
-                                handleOnTap: () {
-                                  handleDelete(snapshot.data![index]["id"]);
-                                },
-                              )
-                            ],
+                            actionButtonsList: actionButtonsList,
                           ));
                 },
               );

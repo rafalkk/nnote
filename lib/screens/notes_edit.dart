@@ -14,11 +14,6 @@ class NotesEdit extends StatefulWidget {
 
   NotesEdit() : _mode = NotesEditMode.create;
 
-  // var _id;
-  //   var _name;
-
-  //   Student({int id, String name}) : _id = id, _name = name;
-
   NotesEdit.edit({required this.noteToEdit}) : _mode = NotesEditMode.update;
 
   _NotesEdit createState() => _NotesEdit();
@@ -42,33 +37,6 @@ class _NotesEdit extends State<NotesEdit> {
       noteContent = _contentTextController.text.trim();
     });
   }
-
-  // Future<void> handleInsertNote(Note note) async {
-  //   NotesDatabase db = NotesDatabase();
-  //   await db.initDatabase();
-  //   await db.insertNote(note);
-  //   await db.closeDatabase();
-  // }
-
-  // Future<void> handleUpdateNote(Note note) async {
-  //   NotesDatabase db = NotesDatabase();
-  //   await db.initDatabase();
-  //   await db.updateNote(note);
-  //   await db.closeDatabase();
-  // }
-
-  //   void handleDelete(int id) async {
-  //   try {
-  //     NotesDatabase db = NotesDatabase();
-  //     await db.initDatabase();
-  //     await db.deleteNote(id);
-  //     await db.closeDatabase();
-  //   } catch (e) {
-  //     print('$e || Error deleting note');
-  //   } finally {
-  //     setState(() {});
-  //   }
-  // }
 
   Future<void> handleSaveButton() async {
     switch (widget._mode) {
